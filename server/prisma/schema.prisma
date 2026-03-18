@@ -8,12 +8,52 @@ datasource db {
   directUrl = env("DATABASE_URL_DIRECT")
 }
 
+enum Priority {
+  low
+  medium
+  high
+}
+
 model User {
-  id     String @id @default(uuid())
+  id     String  @id @default(uuid())
   name   String
-  email  String @unique
+  email  String  @unique
   avatar String?
+
+  tasks       Task[]
+  taskMembers TaskMember[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Task {
+  id       String   @id @default(uuid())
+  title    String
+  priority Priority @default(low)
+  dueDate  DateTime
+  checked  Boolean  @default(false)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  members TaskMember[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TaskMember {
+  id String @id @default(uuid())
+
+  taskId String
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([taskId, userId])
 }
