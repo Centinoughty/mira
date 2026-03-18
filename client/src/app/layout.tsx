@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Sidebar from "@/components/common/Sidebar";
+import { poppins } from "@/styles/font";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -13,7 +15,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`antialiased`}>{children}</body>
+      <body
+        className={`antialiased h-screen flex ${poppins.className} overflow-hidden`}
+      >
+        <Sidebar />
+        <div className="grow overflow-y-auto">{children}</div>
+      </body>
     </html>
   );
 }
