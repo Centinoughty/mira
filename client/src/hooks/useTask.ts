@@ -1,7 +1,8 @@
 import { getTasks } from "@/api/tasks";
+import { TaskItemProps } from "@/types/task";
 import { useQuery } from "@tanstack/react-query";
 
-const EMPTY_TASKS: [] = [];
+const EMPTY_TASKS: TaskItemProps[] = [];
 
 export default function useTask() {
   const query = useQuery({
@@ -9,7 +10,7 @@ export default function useTask() {
     queryFn: getTasks,
   });
 
-  const tasks = query.data ?? EMPTY_TASKS;
+  const tasks: TaskItemProps[] = query.data ?? EMPTY_TASKS;
 
   return {
     tasks,
