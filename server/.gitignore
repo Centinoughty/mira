@@ -1,0 +1,17 @@
+# prisma
+migrations/
+
+# node modules
+node_modules/
+
+# environment variables
+.env
+.env.*
+!.env.example
+
+# server side uploads
+uploads/
+
+# production dirs
+dist/
+/src/generated/prisma
