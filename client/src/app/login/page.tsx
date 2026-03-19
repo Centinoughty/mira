@@ -1,5 +1,6 @@
 "use client";
 
+import { api } from "@/api/axios";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -47,11 +48,7 @@ export default function LoginPage() {
     try {
       const idToken = response.credential;
 
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/google`,
-        { idToken },
-        { withCredentials: true },
-      );
+      const res = await api.post("/auth/google", { idToken });
 
       if (res.status === 200) {
         router.push("/");

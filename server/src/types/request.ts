@@ -1,6 +1,6 @@
 import { Request } from "express";
 
-interface AuthUser {
+export interface AuthUser {
   id: string;
   email: string;
 }

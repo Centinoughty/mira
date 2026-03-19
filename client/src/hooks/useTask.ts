@@ -8,6 +8,7 @@ export default function useTask() {
   const query = useQuery({
     queryKey: ["tasks"],
     queryFn: getTasks,
+    select: (data) => data.tasks,
   });
 
   const tasks: TaskItemProps[] = query.data ?? EMPTY_TASKS;

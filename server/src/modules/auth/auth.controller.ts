@@ -40,7 +40,7 @@ export async function googleLogin(
       httpOnly: true,
       secure: isProd,
       sameSite: isProd ? "none" : "lax",
-      maxAge: 15 * 60,
+      maxAge: 15 * 60 * 1000,
     });
 
     res.cookie("refreshToken", refreshToken, {
@@ -48,7 +48,7 @@ export async function googleLogin(
       secure: isProd,
       sameSite: isProd ? "none" : "lax",
       path: "/auth/refresh",
-      maxAge: 7 * 24 * 60 * 60,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     return res.status(200).json({
