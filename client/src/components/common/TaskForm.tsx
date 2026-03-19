@@ -1,5 +1,6 @@
 import { SyntheticEvent, useState } from "react";
 import Modal from "../ui/Modal";
+import { Calendar, NotepadText, ShieldAlert, TypeOutline } from "lucide-react";
 
 interface CreateTaskProps {
   defaultValues?: TaskFormValue;
@@ -54,22 +55,28 @@ export default function TaskForm({
     <>
       <Modal open={open} onClose={onClose}>
         <form onSubmit={handleSubmit}>
-          <div className="p-8 space-y-6">
+          <div className="p-8 space-y-6 bg-[#f6f6f8] rounded-3xl">
             <h2 className="text-xl font-semibold">Create Task</h2>
 
             <div>
-              <label className="text-sm font-medium">Title</label>
+              <label className="text-sm font-medium flex items-center gap-2">
+                <TypeOutline size={18} />
+                Title
+              </label>
               <input
-                className="mt-1 w-full rounded-lg border px-3 py-2"
+                className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2"
                 value={values.title}
                 onChange={(e) => handleChange("title", e.target.value)}
               />
             </div>
 
             <div>
-              <label className="text-sm font-medium">Description</label>
+              <label className="text-sm font-medium flex items-center gap-2">
+                <NotepadText size={18} />
+                Description
+              </label>
               <textarea
-                className="mt-1 w-full rounded-lg border px-3 py-2 h-32"
+                className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 h-32"
                 value={values.description}
                 onChange={(e) => handleChange("description", e.target.value)}
               />
@@ -77,10 +84,13 @@ export default function TaskForm({
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium">Deadline</label>
+                <label className="text-sm font-medium flex items-center gap-2">
+                  <Calendar size={18} />
+                  Deadline
+                </label>
                 <input
                   type="date"
-                  className="mt-1 w-full rounded-lg border px-3 py-2"
+                  className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2"
                   value={formatDate(values.dueDate)}
                   onChange={(e) =>
                     handleChange("dueDate", new Date(e.target.value))
@@ -89,9 +99,12 @@ export default function TaskForm({
               </div>
 
               <div>
-                <label className="text-sm font-medium">Priority</label>
+                <label className="text-sm font-medium flex items-center gap-2">
+                  <ShieldAlert size={18} />
+                  Priority
+                </label>
                 <select
-                  className="mt-1 w-full rounded-lg border px-3 py-2"
+                  className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2"
                   value={values.priority}
                   onChange={(e) =>
                     handleChange(
@@ -107,19 +120,16 @@ export default function TaskForm({
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 pt-4 border-t">
+            <div className="flex justify-end gap-3 pt-4 border-t border-t-gray-200">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 rounded-lg border"
+                className="px-4 py-2 rounded-lg font-medium text-gray-500"
               >
                 Cancel
               </button>
 
-              <button
-                // disabled={mutation.isPending}
-                className="px-5 py-2 rounded-lg bg-indigo-600 text-white"
-              >
+              <button className="px-4 py-2 rounded-lg bg-indigo-600 text-white">
                 Create Task
               </button>
             </div>

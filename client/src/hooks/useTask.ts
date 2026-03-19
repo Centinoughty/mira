@@ -19,7 +19,6 @@ export default function useTask() {
   const createMutation = useMutation({
     mutationFn: createTask,
 
-    // ⭐ optimistic update
     onMutate: async (values: TaskFormValue) => {
       await qc.cancelQueries({ queryKey: ["tasks"] });
 
@@ -41,14 +40,12 @@ export default function useTask() {
       return { previousTasks };
     },
 
-    // ⭐ rollback
     onError: (_err, _values, context) => {
       if (context?.previousTasks) {
         qc.setQueryData(["tasks"], context.previousTasks);
       }
     },
 
-    // ⭐ replace optimistic with server data
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["tasks"] });
     },
