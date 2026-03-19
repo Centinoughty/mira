@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Sidebar from "@/components/common/Sidebar";
 import { poppins } from "@/styles/font";
-import Navbar from "@/components/common/Navbar";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {
@@ -20,13 +18,7 @@ export default function RootLayout({
       <body
         className={`antialiased h-screen flex ${poppins.className} overflow-hidden`}
       >
-        <Providers>
-          <Sidebar />
-          <div className="grow flex flex-col overflow-y-auto">
-            <Navbar />
-            <div className="grow bg-[#f6f6f8]">{children}</div>
-          </div>
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

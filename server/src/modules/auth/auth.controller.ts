@@ -53,7 +53,12 @@ export async function googleLogin(
 
     return res.status(200).json({
       message: "Login success",
-      user: { email: user.email, name: user.name, avatar: user.avatar },
+      user: {
+        email: user.email,
+        name: user.name,
+        avatar: user.avatar,
+        createdAt: user.createdAt,
+      },
     });
   } catch (error) {
     console.log("USER_LOGIN_ERROR", error);
