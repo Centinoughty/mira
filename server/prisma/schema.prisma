@@ -28,11 +28,12 @@ model User {
 }
 
 model Task {
-  id       String   @id @default(uuid())
-  title    String
-  priority Priority @default(low)
-  dueDate  DateTime
-  checked  Boolean  @default(false)
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  priority    Priority @default(low)
+  dueDate     DateTime
+  checked     Boolean  @default(false)
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)

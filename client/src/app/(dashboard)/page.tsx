@@ -10,7 +10,7 @@ import { useState } from "react";
 export default function Home() {
   const [open, setOpen] = useState<boolean>(false);
 
-  const { tasks, createTask } = useTask();
+  const { tasks, createTask, isCreating } = useTask();
 
   return (
     <>
@@ -45,6 +45,7 @@ export default function Home() {
       <TaskForm
         open={open}
         onClose={() => setOpen(false)}
+        isCreating={isCreating}
         onSubmit={(values) => createTask(values)}
       />
 

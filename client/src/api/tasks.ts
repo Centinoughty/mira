@@ -7,6 +7,6 @@ export async function getTasks() {
 }
 
 export async function createTask(values: TaskFormValue) {
-  const { data } = await api.post("/task", values);
+  const { data } = await api.post("/task/create", values);
   return data;
 }

@@ -1,4 +1,4 @@
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import Modal from "../ui/Modal";
 import { Calendar, NotepadText, ShieldAlert, TypeOutline } from "lucide-react";
 
@@ -7,11 +7,12 @@ interface CreateTaskProps {
   open: boolean;
   onClose: () => void;
   onSubmit: (values: TaskFormValue) => void;
+  isCreating: boolean;
 }
 
 export interface TaskFormValue {
   title: string;
-  description: string;
+  description?: string;
   priority: "low" | "medium" | "high";
   dueDate: Date;
 }
@@ -28,10 +29,15 @@ export default function TaskForm({
   open,
   onClose,
   onSubmit,
+  isCreating,
 }: CreateTaskProps) {
-  const [values, setValues] = useState<TaskFormValue>(
-    () => defaultValues ?? initialValues,
-  );
+  const [values, setValues] = useState<TaskFormValue>(initialValues);
+
+  useEffect(() => {
+    if (open) {
+      setValues(defaultValues ?? initialValues);
+    }
+  }, [open, defaultValues]);
 
   function formatDate(date: Date) {
     return date.toISOString().split("T")[0];
@@ -44,10 +50,10 @@ export default function TaskForm({
     setValues((prev) => ({ ...prev, [key]: value }));
   }
 
-  function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
+  async function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
-    onSubmit(values);
-
+    await onSubmit(values);
+    onClose();
     setValues(initialValues);
   }
 
@@ -129,7 +135,11 @@ export default function TaskForm({
                 Cancel
               </button>
 
-              <button className="px-4 py-2 rounded-lg bg-indigo-600 text-white">
+              <button
+                type="submit"
+                disabled={isCreating}
+                className="px-4 py-2 rounded-lg bg-indigo-600 text-white"
+              >
                 Create Task
               </button>
             </div>

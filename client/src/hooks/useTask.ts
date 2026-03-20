@@ -11,7 +11,7 @@ export default function useTask() {
   const query = useQuery({
     queryKey: ["tasks"],
     queryFn: getTasks,
-    select: (data) => data.tasks,
+    select: (data) => data.tasks as TaskItemProps[],
   });
 
   const tasks: TaskItemProps[] = query.data ?? EMPTY_TASKS;
@@ -25,9 +25,10 @@ export default function useTask() {
       const previousTasks = qc.getQueryData<TaskItemProps[]>(["tasks"]) ?? [];
 
       const optimisticTask: TaskItemProps = {
+        id: crypto.randomUUID(),
         title: values.title,
         checked: false,
-        description: values.description,
+        description: values.description ?? undefined,
         priority: values.priority,
         dueDate: values.dueDate,
       };
@@ -37,17 +38,21 @@ export default function useTask() {
         ...old,
       ]);
 
+      console.log("kygdfgeiu");
+
       return { previousTasks };
     },
 
     onError: (_err, _values, context) => {
       if (context?.previousTasks) {
         qc.setQueryData(["tasks"], context.previousTasks);
+        console.log("jdbflub");
       }
     },
 
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["tasks"] });
+      console.log("ljdbgfs");
     },
   });
 
@@ -55,6 +60,7 @@ export default function useTask() {
     tasks,
 
     createTask: createMutation.mutate,
+    isCreating: createMutation.isPending,
 
     isLoading: query.isLoading,
     refetch: query.refetch,

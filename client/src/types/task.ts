@@ -1,6 +1,7 @@
 export interface TaskItemProps {
+  id?: string;
   title: string;
-  description: string;
+  description?: string;
   priority: "low" | "medium" | "high";
   dueDate: Date;
   checked: boolean;
