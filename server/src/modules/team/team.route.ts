@@ -18,7 +18,9 @@ import {
 const router = Router();
 
 router.get("/", requireAuth, getTeams);
+
 router.post("/", requireAuth, validate(CreateTeamBody), createTeam);
+
 router.post(
   "/:id/members",
   requireAuth,
@@ -26,12 +28,14 @@ router.post(
   validate(AddTeamMemberBody),
   addTeamMember,
 );
+
 router.delete(
   "/:id/members/:memberId",
   requireAuth,
   validate(TeamMemberParams, "params"),
   removeTeamMember,
 );
+
 router.delete(
   "/:id",
   requireAuth,

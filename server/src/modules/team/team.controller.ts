@@ -50,7 +50,6 @@ export async function createTeam(
     const { id: userId } = req.user!;
     const { name, description, memberEmails } = req.body;
 
-    // Resolve emails to user ids — skip emails that don't exist yet
     const users = memberEmails.length
       ? await prisma.user.findMany({
           where: { email: { in: memberEmails }, NOT: { id: userId } },
