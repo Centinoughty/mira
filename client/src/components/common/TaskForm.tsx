@@ -40,7 +40,9 @@ export default function TaskForm({
   }, [open, defaultValues]);
 
   function formatDate(date: Date) {
-    return date.toISOString().split("T")[0];
+    const d = new Date(date);
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    return d.toISOString().slice(0, 16);
   }
 
   function handleChange(
@@ -95,7 +97,7 @@ export default function TaskForm({
                   Deadline
                 </label>
                 <input
-                  type="date"
+                  type="datetime-local"
                   className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2"
                   value={formatDate(values.dueDate)}
                   onChange={(e) =>

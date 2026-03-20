@@ -31,6 +31,11 @@ router.patch(
   updateTask,
 );
 
-router.delete("/:id", requireAuth, validate(TaskIdParams), deleteTask);
+router.delete(
+  "/:id",
+  requireAuth,
+  validate(TaskIdParams, "params"),
+  deleteTask,
+);
 
 export default router;
