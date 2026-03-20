@@ -3,6 +3,22 @@ import { Response } from "express";
 import { TypedRequest } from "../../types/request";
 import { TaskCreateBody, TaskIdParams, TaskUpdateBody } from "./task.schema";
 
+const taskSelect = {
+  id: true,
+  title: true,
+  description: true,
+  dueDate: true,
+  priority: true,
+  checked: true,
+  createdAt: true,
+  members: {
+    select: {
+      id: true,
+      user: { select: { id: true, name: true, email: true, avatar: true } },
+    },
+  },
+};
+
 export async function getTasks(req: TypedRequest, res: Response) {
   try {
     const { id } = req.user!;
@@ -11,6 +27,7 @@ export async function getTasks(req: TypedRequest, res: Response) {
       where: {
         OR: [{ userId: id }, { members: { some: { userId: id } } }],
       },
+      select: taskSelect,
     });
 
     res.status(200).json({ message: "Fetched all tasks", tasks });
@@ -37,14 +54,7 @@ export async function createTask(
         priority,
         userId,
       },
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        dueDate: true,
-        priority: true,
-        createdAt: true,
-      },
+      select: taskSelect,
     });
 
     return res.status(201).json({ message: "Task created", task: newTask });
@@ -102,6 +112,7 @@ export async function updateTask(
     const updated = await prisma.task.update({
       where: { id },
       data: { title, description: description || null, dueDate, priority },
+      select: taskSelect,
     });
 
     res.status(200).json({ message: "Task updated", task: updated });

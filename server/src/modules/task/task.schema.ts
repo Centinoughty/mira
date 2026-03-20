@@ -5,6 +5,7 @@ export const TaskCreateBody = z.object({
   description: z.string().nullish(),
   dueDate: z.coerce.date(),
   priority: z.enum(["low", "medium", "high"]),
+  memberIds: z.array(z.uuidv4()).default([]),
 });
 
 export const TaskUpdateBody = z.object({
@@ -12,6 +13,7 @@ export const TaskUpdateBody = z.object({
   description: z.string().nullish(),
   dueDate: z.coerce.date(),
   priority: z.enum(["low", "medium", "high"]),
+  memberIds: z.array(z.uuidv4()).default([]),
 });
 
 export const TaskIdParams = z.object({

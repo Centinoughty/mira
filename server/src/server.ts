@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 
 import authRoutes from "./modules/auth/auth.route";
 import taskRoutes from "./modules/task/task.route";
+import teamRoutes from "./modules/team/team.route";
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ export function startServer() {
 
   app.use("/auth", authRoutes);
   app.use("/task", taskRoutes);
+  app.use("/team", teamRoutes);
 
   app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);

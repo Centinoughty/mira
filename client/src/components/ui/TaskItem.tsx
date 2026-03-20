@@ -13,7 +13,7 @@ export default function TaskItem({
   priority,
   dueDate,
   checked,
-  collaborators,
+  members,
   onToggle,
   onEdit,
   onDelete,
@@ -65,11 +65,11 @@ export default function TaskItem({
 
         <div className="flex items-center gap-2">
           <ul className="flex items-center">
-            {collaborators?.slice(0, 5).map((collaborator, idx) => (
+            {members?.slice(0, 5).map((member, idx) => (
               <li key={idx} className={`${idx !== 0 ? "-ml-3" : ""} relative`}>
                 <Image
-                  src={collaborator.avatar}
-                  alt={collaborator.name}
+                  src={member.user.avatar!}
+                  alt={member.user.name}
                   width={33}
                   height={33}
                   className="rounded-full border-2 border-gray-200"
@@ -78,8 +78,8 @@ export default function TaskItem({
             ))}
 
             <span className="text-xs ml-1">
-              {collaborators && collaborators.length > 5
-                ? `+ ${collaborators.length - 5} more`
+              {members && members.length > 5
+                ? `+ ${members.length - 5} more`
                 : ""}
             </span>
           </ul>

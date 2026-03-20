@@ -1,3 +1,13 @@
+export interface TaskMember {
+  id: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    avatar: string | null;
+  };
+}
+
 export interface TaskItemProps {
   id?: string;
   title: string;
@@ -5,12 +15,5 @@ export interface TaskItemProps {
   priority: "low" | "medium" | "high";
   dueDate: Date;
   checked: boolean;
-  user?: Collaborator;
-  collaborators?: Collaborator[];
-}
-
-export interface Collaborator {
-  name: string;
-  email: string;
-  avatar: string;
+  members?: TaskMember[];
 }

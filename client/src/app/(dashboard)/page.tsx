@@ -4,74 +4,73 @@ import TaskForm from "@/components/common/TaskForm";
 import TaskItem from "@/components/ui/TaskItem";
 import Title from "@/components/ui/Title";
 import useTask from "@/hooks/useTask";
+import useTeam from "@/hooks/useTeam";
 import { TaskItemProps } from "@/types/task";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 
 export default function Home() {
-  const [open, setOpen] = useState<boolean>(false);
+  const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<TaskItemProps | null>(null);
 
   const {
     todayTasks,
     upcomingTasks,
     createTask,
-    toggleTask,
     updateTask,
     deleteTask,
+    toggleTask,
     isCreating,
     isUpdating,
   } = useTask();
+
+  const { allMembers } = useTeam();
+
+  function renderTask(task: TaskItemProps) {
+    return (
+      <TaskItem
+        key={task.id}
+        {...task}
+        onToggle={() => task.id && toggleTask(task.id)}
+        onEdit={() => setEditing(task)}
+        onDelete={() => task.id && deleteTask(task.id)}
+      />
+    );
+  }
 
   return (
     <>
       <main className="p-4 flex flex-col gap-6">
         <div>
           <Title text="Dashboard" />
-
           <p className="text-sm text-gray-400">
-            You have {todayTasks.length} tasks pending for today.
+            You have {todayTasks.length} task
+            {todayTasks.length !== 1 ? "s" : ""} due today.
           </p>
         </div>
 
         <div>
           <Title text="Today" className="text-lg" />
-
-          <ul className="flex flex-col gap-2">
-            {todayTasks.map((task) => (
-              <TaskItem
-                key={task.id}
-                title={task.title}
-                description={task.description}
-                priority={task.priority}
-                dueDate={task.dueDate}
-                checked={task.checked}
-                onToggle={() => task.id && toggleTask(task.id)}
-                onEdit={() => setEditing(task)}
-                onDelete={() => task.id && deleteTask(task.id)}
-              />
-            ))}
-          </ul>
+          {todayTasks.length > 0 ? (
+            <ul className="flex flex-col gap-2">
+              {todayTasks.map(renderTask)}
+            </ul>
+          ) : (
+            <p className="text-sm text-gray-400 mt-1">No tasks due today.</p>
+          )}
         </div>
 
         <div>
           <Title text="Next 7 Days" className="text-lg" />
-
-          <ul className="flex flex-col gap-2">
-            {upcomingTasks.map((task) => (
-              <TaskItem
-                key={task.id}
-                title={task.title}
-                description={task.description}
-                priority={task.priority}
-                dueDate={task.dueDate}
-                checked={task.checked}
-                onToggle={() => task.id && toggleTask(task.id)}
-                onEdit={() => setEditing(task)}
-                onDelete={() => task.id && deleteTask(task.id)}
-              />
-            ))}
-          </ul>
+          {upcomingTasks.length > 0 ? (
+            <ul className="flex flex-col gap-2">
+              {upcomingTasks.map(renderTask)}
+            </ul>
+          ) : (
+            <p className="text-sm text-gray-400 mt-1">
+              No upcoming tasks this week.
+            </p>
+          )}
         </div>
       </main>
 
@@ -84,11 +83,13 @@ export default function Home() {
                 description: editing.description,
                 priority: editing.priority,
                 dueDate: new Date(editing.dueDate),
+                memberIds: editing.members?.map((m) => m.user.id) ?? [],
               }
             : undefined
         }
         onClose={() => setEditing(null)}
         isSubmitting={isUpdating}
+        availableMembers={allMembers}
         onSubmit={(values) => {
           if (editing?.id) updateTask({ id: editing.id, values });
         }}
@@ -98,6 +99,7 @@ export default function Home() {
         open={open}
         onClose={() => setOpen(false)}
         isSubmitting={isCreating}
+        availableMembers={allMembers}
         onSubmit={(values) => createTask(values)}
       />
 
