@@ -15,3 +15,19 @@ export async function toggleTaskStatus(id: string) {
   const { data } = await api.patch(`/task/${id}/status`);
   return data;
 }
+
+export async function updateTask({
+  id,
+  values,
+}: {
+  id: string;
+  values: TaskFormValue;
+}) {
+  const { data } = await api.patch(`/task/${id}`, values);
+  return data;
+}
+
+export async function deleteTask(id: string) {
+  const { data } = await api.delete(`/task/${id}`);
+  return data;
+}

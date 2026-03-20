@@ -1,9 +1,11 @@
 import { TaskItemProps } from "@/types/task";
-import { Clock, EllipsisVertical } from "lucide-react";
+import { Clock, EllipsisVertical, Pencil, Trash2 } from "lucide-react";
 import Image from "next/image";
 
 interface TaskItemExtendedProps extends TaskItemProps {
   onToggle?: () => void;
+  onEdit?: () => void;
+  onDelete?: () => void;
 }
 
 export default function TaskItem({
@@ -13,6 +15,8 @@ export default function TaskItem({
   checked,
   collaborators,
   onToggle,
+  onEdit,
+  onDelete,
 }: TaskItemExtendedProps) {
   return (
     <>
@@ -80,9 +84,21 @@ export default function TaskItem({
             </span>
           </ul>
 
-          <div>
-            <EllipsisVertical className="text-gray-400" />
-          </div>
+          <button
+            type="button"
+            onClick={onEdit}
+            className="p-1.5 rounded-md text-gray-400 hover:text-indigo-500 hover:bg-indigo-50 transition-colors"
+          >
+            <Pencil size={15} />
+          </button>
+
+          <button
+            type="button"
+            onClick={onDelete}
+            className="p-1.5 rounded-md text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+          >
+            <Trash2 size={15} />
+          </button>
         </div>
       </div>
     </>

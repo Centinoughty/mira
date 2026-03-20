@@ -7,10 +7,17 @@ export const TaskCreateBody = z.object({
   priority: z.enum(["low", "medium", "high"]),
 });
 
-export type TaskCreateBody = z.infer<typeof TaskCreateBody>;
+export const TaskUpdateBody = z.object({
+  title: z.string().min(1).max(255),
+  description: z.string().optional(),
+  dueDate: z.coerce.date(),
+  priority: z.enum(["low", "medium", "high"]),
+});
 
-export const ToggleTaskParams = z.object({
+export const TaskIdParams = z.object({
   id: z.uuidv4(),
 });
 
-export type ToggleTaskParams = z.infer<typeof ToggleTaskParams>;
+export type TaskCreateBody = z.infer<typeof TaskCreateBody>;
+export type TaskUpdateBody = z.infer<typeof TaskUpdateBody>;
+export type TaskIdParams = z.infer<typeof TaskIdParams>;

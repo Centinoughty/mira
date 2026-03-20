@@ -1,8 +1,14 @@
 import { Router } from "express";
-import { createTask, getTasks, toggleTaskStatus } from "./task.controller";
+import {
+  createTask,
+  deleteTask,
+  getTasks,
+  toggleTaskStatus,
+  updateTask,
+} from "./task.controller";
 import { requireAuth } from "../../middlewares/auth";
 import { validate } from "../../middlewares/validate";
-import { TaskCreateBody, ToggleTaskParams } from "./task.schema";
+import { TaskCreateBody, TaskIdParams, TaskUpdateBody } from "./task.schema";
 
 const router = Router();
 
@@ -13,11 +19,18 @@ router.post("/create", requireAuth, validate(TaskCreateBody), createTask);
 router.patch(
   "/:id/status",
   requireAuth,
-  validate(ToggleTaskParams),
+  validate(TaskIdParams, "params"),
   toggleTaskStatus,
 );
 
-// router.patch("/:id");
-// router.delete("/:id");
+router.patch(
+  "/:id",
+  requireAuth,
+  validate(TaskIdParams, "params"),
+  validate(TaskUpdateBody),
+  updateTask,
+);
+
+router.delete("/:id", requireAuth, validate(TaskIdParams), deleteTask);
 
 export default router;

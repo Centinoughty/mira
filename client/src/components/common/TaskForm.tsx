@@ -7,7 +7,7 @@ interface CreateTaskProps {
   open: boolean;
   onClose: () => void;
   onSubmit: (values: TaskFormValue) => void;
-  isCreating: boolean;
+  isSubmitting: boolean;
 }
 
 export interface TaskFormValue {
@@ -29,7 +29,7 @@ export default function TaskForm({
   open,
   onClose,
   onSubmit,
-  isCreating,
+  isSubmitting,
 }: CreateTaskProps) {
   const [values, setValues] = useState<TaskFormValue>(initialValues);
 
@@ -83,7 +83,7 @@ export default function TaskForm({
               </label>
               <textarea
                 className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 h-32"
-                value={values.description}
+                value={values.description ?? ""}
                 onChange={(e) => handleChange("description", e.target.value)}
               />
             </div>
@@ -137,10 +137,10 @@ export default function TaskForm({
 
               <button
                 type="submit"
-                disabled={isCreating}
+                disabled={isSubmitting}
                 className="px-4 py-2 rounded-lg bg-indigo-600 text-white"
               >
-                Create Task
+                {defaultValues ? "Update" : "Create"} Task
               </button>
             </div>
           </div>

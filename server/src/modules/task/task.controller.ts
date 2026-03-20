@@ -1,7 +1,7 @@
 import { prisma } from "../../lib/prisma";
 import { Response } from "express";
 import { TypedRequest } from "../../types/request";
-import { TaskCreateBody, ToggleTaskParams } from "./task.schema";
+import { TaskCreateBody, TaskIdParams, TaskUpdateBody } from "./task.schema";
 
 export async function getTasks(req: TypedRequest, res: Response) {
   try {
@@ -55,7 +55,7 @@ export async function createTask(
 }
 
 export async function toggleTaskStatus(
-  req: TypedRequest<ToggleTaskParams, {}, {}>,
+  req: TypedRequest<TaskIdParams, {}, {}>,
   res: Response,
 ) {
   try {
@@ -79,6 +79,58 @@ export async function toggleTaskStatus(
     res.status(200).json({ message: "Task status updated", task: updated });
   } catch (error) {
     console.log("TOGGLE_TASK_STATUS_ERROR", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+export async function updateTask(
+  req: TypedRequest<TaskIdParams, TaskUpdateBody, {}>,
+  res: Response,
+) {
+  try {
+    const { id: userId } = req.user!;
+    const { id } = req.params;
+    const { title, description, dueDate, priority } = req.body;
+
+    const task = await prisma.task.findFirst({ where: { id, userId } });
+
+    if (!task) {
+      res.status(404).json({ message: "Task not found" });
+      return;
+    }
+
+    const updated = await prisma.task.update({
+      where: { id },
+      data: { title, description: description || null, dueDate, priority },
+    });
+
+    res.status(200).json({ message: "Task updated", task: updated });
+  } catch (error) {
+    console.log("UPDATE_TASK_ERROR", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+export async function deleteTask(
+  req: TypedRequest<TaskIdParams, {}, {}>,
+  res: Response,
+) {
+  try {
+    const { id: userId } = req.user!;
+    const { id } = req.params;
+
+    const task = await prisma.task.findFirst({ where: { id, userId } });
+
+    if (!task) {
+      res.status(404).json({ message: "Task not found" });
+      return;
+    }
+
+    await prisma.task.delete({ where: { id } });
+
+    res.status(200).json({ message: "Task deleted" });
+  } catch (error) {
+    console.log("DELETE_TASK_ERROR", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 }
