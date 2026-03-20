@@ -10,7 +10,7 @@ import { useState } from "react";
 export default function Home() {
   const [open, setOpen] = useState<boolean>(false);
 
-  const { tasks, createTask, isCreating } = useTask();
+  const { tasks, createTask, toggleTask, isCreating } = useTask();
 
   return (
     <>
@@ -26,15 +26,19 @@ export default function Home() {
         <div>
           <Title text="Today" className="text-lg" />
 
-          {tasks.map((task) => (
-            <TaskItem
-              title={task.title}
-              description={task.description}
-              priority={task.priority}
-              dueDate={task.dueDate}
-              checked
-            />
-          ))}
+          <ul className="flex flex-col gap-2">
+            {tasks.map((task) => (
+              <TaskItem
+                key={task.id}
+                title={task.title}
+                description={task.description}
+                priority={task.priority}
+                dueDate={task.dueDate}
+                checked={task.checked}
+                onToggle={() => task.id && toggleTask(task.id)}
+              />
+            ))}
+          </ul>
         </div>
 
         <div>

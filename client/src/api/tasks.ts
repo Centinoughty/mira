@@ -10,3 +10,8 @@ export async function createTask(values: TaskFormValue) {
   const { data } = await api.post("/task/create", values);
   return data;
 }
+
+export async function toggleTaskStatus(id: string) {
+  const { data } = await api.patch(`/task/${id}/status`);
+  return data;
+}

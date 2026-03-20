@@ -2,20 +2,35 @@ import { TaskItemProps } from "@/types/task";
 import { Clock, EllipsisVertical } from "lucide-react";
 import Image from "next/image";
 
+interface TaskItemExtendedProps extends TaskItemProps {
+  onToggle?: () => void;
+}
+
 export default function TaskItem({
   title,
   priority,
   dueDate,
+  checked,
   collaborators,
-}: TaskItemProps) {
+  onToggle,
+}: TaskItemExtendedProps) {
   return (
     <>
-      <div className="px-4 py-2 flex items-center justify-between bg-white rounded-lg border-2 border-gray-200">
+      <div
+        className={`px-4 py-2 flex items-center justify-between bg-white rounded-lg border-2 transition-colors ${
+          checked ? "border-green-200 opacity-60" : "border-gray-200"
+        }`}
+      >
         <div className="flex items-center gap-4">
           <div>
             <input
               type="checkbox"
-              className="appearance-none h-4 w-4 rounded-md border-2 border-gray-400"
+              onClick={onToggle}
+              className={`h-4 w-4 rounded-md border-2 flex items-center justify-center shrink-0 transition-colors ${
+                checked
+                  ? "bg-green-500 border-green-500"
+                  : "border-gray-400 bg-white"
+              }`}
             />
           </div>
 
@@ -32,8 +47,8 @@ export default function TaskItem({
               <span className="text-sm text-gray-500 flex items-center gap-1">
                 <Clock size={14} />
                 Due{" "}
-                {new Date(Date.now()).getDate() === dueDate.getDate()
-                  ? dueDate.toLocaleTimeString("en-US", {
+                {new Date(Date.now()).getDate() === new Date(dueDate).getDate()
+                  ? new Date(dueDate).toLocaleTimeString("en-US", {
                       hour: "numeric",
                       minute: "numeric",
                       hour12: true,

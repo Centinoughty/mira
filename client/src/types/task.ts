@@ -9,7 +9,7 @@ export interface TaskItemProps {
   collaborators?: Collaborator[];
 }
 
-interface Collaborator {
+export interface Collaborator {
   name: string;
   email: string;
   avatar: string;

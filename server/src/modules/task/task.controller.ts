@@ -1,7 +1,7 @@
 import { prisma } from "../../lib/prisma";
 import { Response } from "express";
 import { TypedRequest } from "../../types/request";
-import { TaskCreateBody } from "./task.schema";
+import { TaskCreateBody, ToggleTaskParams } from "./task.schema";
 
 export async function getTasks(req: TypedRequest, res: Response) {
   try {
@@ -32,7 +32,7 @@ export async function createTask(
     const newTask = await prisma.task.create({
       data: {
         title,
-        description: description ?? null,
+        description: description || null,
         dueDate,
         priority,
         userId,
@@ -50,6 +50,35 @@ export async function createTask(
     return res.status(201).json({ message: "Task created", task: newTask });
   } catch (error) {
     console.log("CREATE_TASK_ERROR", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+export async function toggleTaskStatus(
+  req: TypedRequest<ToggleTaskParams, {}, {}>,
+  res: Response,
+) {
+  try {
+    const { id: userId } = req.user!;
+    const { id } = req.params;
+
+    const task = await prisma.task.findFirst({
+      where: { id, userId },
+    });
+
+    if (!task) {
+      res.status(404).json({ message: "Task not found" });
+      return;
+    }
+
+    const updated = await prisma.task.update({
+      where: { id },
+      data: { checked: !task.checked },
+    });
+
+    res.status(200).json({ message: "Task status updated", task: updated });
+  } catch (error) {
+    console.log("TOGGLE_TASK_STATUS_ERROR", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 }

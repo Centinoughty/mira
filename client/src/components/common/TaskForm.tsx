@@ -50,9 +50,9 @@ export default function TaskForm({
     setValues((prev) => ({ ...prev, [key]: value }));
   }
 
-  async function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
+  function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
-    await onSubmit(values);
+    onSubmit(values);
     onClose();
     setValues(initialValues);
   }

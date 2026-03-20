@@ -1,4 +1,4 @@
-import { createTask, getTasks } from "@/api/tasks";
+import { createTask, getTasks, toggleTaskStatus } from "@/api/tasks";
 import { TaskFormValue } from "@/components/common/TaskForm";
 import { TaskItemProps } from "@/types/task";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -18,48 +18,23 @@ export default function useTask() {
 
   const createMutation = useMutation({
     mutationFn: createTask,
-
-    onMutate: async (values: TaskFormValue) => {
-      await qc.cancelQueries({ queryKey: ["tasks"] });
-
-      const previousTasks = qc.getQueryData<TaskItemProps[]>(["tasks"]) ?? [];
-
-      const optimisticTask: TaskItemProps = {
-        id: crypto.randomUUID(),
-        title: values.title,
-        checked: false,
-        description: values.description ?? undefined,
-        priority: values.priority,
-        dueDate: values.dueDate,
-      };
-
-      qc.setQueryData<TaskItemProps[]>(["tasks"], (old = []) => [
-        optimisticTask,
-        ...old,
-      ]);
-
-      console.log("kygdfgeiu");
-
-      return { previousTasks };
-    },
-
-    onError: (_err, _values, context) => {
-      if (context?.previousTasks) {
-        qc.setQueryData(["tasks"], context.previousTasks);
-        console.log("jdbflub");
-      }
-    },
-
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["tasks"] });
-      console.log("ljdbgfs");
-    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["tasks"] }),
   });
+
+  const toggleMutation = useMutation({
+    mutationFn: toggleTaskStatus,
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["tasks"] }),
+  });
+
+  const createItem = (values: TaskFormValue) => createMutation.mutate(values);
+  const toggleItem = (id: string) => toggleMutation.mutate(id);
 
   return {
     tasks,
 
-    createTask: createMutation.mutate,
+    createTask: createItem,
+    toggleTask: toggleItem,
+
     isCreating: createMutation.isPending,
 
     isLoading: query.isLoading,
