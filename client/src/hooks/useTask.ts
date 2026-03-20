@@ -11,6 +11,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const EMPTY_TASKS: TaskItemProps[] = [];
 
+function startOfDay(date: Date) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
 export default function useTask() {
   const qc = useQueryClient();
 
@@ -21,6 +25,20 @@ export default function useTask() {
   });
 
   const tasks: TaskItemProps[] = query.data ?? EMPTY_TASKS;
+
+  const todayStart = startOfDay(new Date());
+  const todayEnd = new Date(todayStart.getTime() + 24 * 60 * 60 * 1000);
+  const weekEnd = new Date(todayStart.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+  const todayTasks = tasks.filter((t) => {
+    const d = startOfDay(new Date(t.dueDate));
+    return d >= todayStart && d < todayEnd;
+  });
+
+  const upcomingTasks = tasks.filter((t) => {
+    const d = startOfDay(new Date(t.dueDate));
+    return d >= todayEnd && d < weekEnd;
+  });
 
   const createMutation = useMutation({
     mutationFn: createTask,
@@ -50,6 +68,8 @@ export default function useTask() {
 
   return {
     tasks,
+    todayTasks,
+    upcomingTasks,
 
     createTask: createItem,
     toggleTask: toggleItem,

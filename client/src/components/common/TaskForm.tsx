@@ -61,7 +61,7 @@ export default function TaskForm({
     <>
       <Modal open={open} onClose={onClose}>
         <form onSubmit={handleSubmit}>
-          <div className="p-8 space-y-6 bg-[#f6f6f8] rounded-3xl">
+          <div className="p-8 space-y-6 bg-[#f6f6f8] rounded-4xl">
             <h2 className="text-xl font-semibold">Create Task</h2>
 
             <div>

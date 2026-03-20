@@ -2,14 +2,14 @@ import { z } from "zod";
 
 export const TaskCreateBody = z.object({
   title: z.string().min(1).max(255),
-  description: z.string().optional(),
+  description: z.string().nullish(),
   dueDate: z.coerce.date(),
   priority: z.enum(["low", "medium", "high"]),
 });
 
 export const TaskUpdateBody = z.object({
   title: z.string().min(1).max(255),
-  description: z.string().optional(),
+  description: z.string().nullish(),
   dueDate: z.coerce.date(),
   priority: z.enum(["low", "medium", "high"]),
 });

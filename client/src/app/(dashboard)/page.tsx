@@ -13,14 +13,14 @@ export default function Home() {
   const [editing, setEditing] = useState<TaskItemProps | null>(null);
 
   const {
-    tasks,
+    todayTasks,
+    upcomingTasks,
     createTask,
     toggleTask,
     updateTask,
     deleteTask,
     isCreating,
     isUpdating,
-    isDeleting,
   } = useTask();
 
   return (
@@ -30,7 +30,7 @@ export default function Home() {
           <Title text="Dashboard" />
 
           <p className="text-sm text-gray-400">
-            You have {tasks.length} tasks pending for today.
+            You have {todayTasks.length} tasks pending for today.
           </p>
         </div>
 
@@ -38,7 +38,7 @@ export default function Home() {
           <Title text="Today" className="text-lg" />
 
           <ul className="flex flex-col gap-2">
-            {tasks.map((task) => (
+            {todayTasks.map((task) => (
               <TaskItem
                 key={task.id}
                 title={task.title}
@@ -56,6 +56,22 @@ export default function Home() {
 
         <div>
           <Title text="Next 7 Days" className="text-lg" />
+
+          <ul className="flex flex-col gap-2">
+            {upcomingTasks.map((task) => (
+              <TaskItem
+                key={task.id}
+                title={task.title}
+                description={task.description}
+                priority={task.priority}
+                dueDate={task.dueDate}
+                checked={task.checked}
+                onToggle={() => task.id && toggleTask(task.id)}
+                onEdit={() => setEditing(task)}
+                onDelete={() => task.id && deleteTask(task.id)}
+              />
+            ))}
+          </ul>
         </div>
       </main>
 
