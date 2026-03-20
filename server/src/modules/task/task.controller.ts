@@ -44,7 +44,7 @@ export async function createTask(
   try {
     const { id: userId } = req.user!;
 
-    const { title, description, dueDate, priority } = req.body;
+    const { title, description, dueDate, priority, memberIds } = req.body;
 
     const newTask = await prisma.task.create({
       data: {
@@ -53,6 +53,9 @@ export async function createTask(
         dueDate,
         priority,
         userId,
+        members: {
+          create: (memberIds ?? []).map((uid) => ({ userId: uid })),
+        },
       },
       select: taskSelect,
     });
@@ -100,7 +103,7 @@ export async function updateTask(
   try {
     const { id: userId } = req.user!;
     const { id } = req.params;
-    const { title, description, dueDate, priority } = req.body;
+    const { title, description, dueDate, priority, memberIds } = req.body;
 
     const task = await prisma.task.findFirst({ where: { id, userId } });
 
@@ -109,9 +112,19 @@ export async function updateTask(
       return;
     }
 
+    await prisma.taskMember.deleteMany({ where: { taskId: id } });
+
     const updated = await prisma.task.update({
       where: { id },
-      data: { title, description: description || null, dueDate, priority },
+      data: {
+        title,
+        description: description || null,
+        dueDate,
+        priority,
+        members: {
+          create: (memberIds ?? []).map((uid) => ({ userId: uid })),
+        },
+      },
       select: taskSelect,
     });
 
