@@ -11,11 +11,11 @@ Mira is a full-stack collaborative task management application that lets you cre
 
 ## Features
 
-- **Google Authentication** - secure sign-in via Google OAuth, with JWT access/refresh token rotation
+- **Google Authentication** - secure sign-in via Google OAuth, with JWT access and refresh token verification
 - **Personal Task Management** — create, edit, delete, and complete tasks with priority levels and deadlines
 - **Team Management** — create teams, invite members by email, and manage membership at any time
 - **Task Assignment** — assign tasks to team members directly from the task form
-- **Date Filtering** — tasks are automatically separated into Today and Next 7 Days buckets
+- **Date Filtering** — tasks are automatically separated into Today and Next 7 Days buckets in the client
 
 ## Prerequisites
 
@@ -28,7 +28,7 @@ Mira is a full-stack collaborative task management application that lets you cre
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/mira.git
+git clone https://github.com/Centinoughty/mira.git
 cd mira
 ```
 
@@ -54,7 +54,7 @@ docker exec -it mira-server npx prisma migrate dev
 
 ## Running Without Docker
 
-If you prefer to run the client and server locally without containers, make sure PostgreSQL is running and accessible, then update `DATABASE_URL` in `server/.env` to point to your local instance.
+If you prefer to run the client and server locally without containers, make sure PostgreSQL is running and accessible, then update `DATABASE_URL` and the `DATABASE_URL_DIRECT` in `server/.env` to point to your local instance.
 
 **Server:**
 
@@ -81,7 +81,7 @@ There is no seed file included, but you can populate the database with test data
 
 ### 1. Create a user
 
-Sign in with a real Google account via the login page. This creates your first user in the database automatically.
+Sign in with a real Google account via the `login` page. This creates your first user in the database automatically.
 
 ### 2. Create additional test users
 
@@ -89,11 +89,11 @@ To test task assignment and team collaboration, sign in with additional Google a
 
 ### 3. Create teams
 
-Once you have two or more users, log in as one user and navigate to the **Teams** page. Create a team and invite the other users by their Google email addresses.
+Once you have two or more users, log in as one user and navigate to the `teams` page. Create a team and invite the other users by their Google email addresses.
 
 ### 4. Assign tasks
 
-From the **Teams** page, click **Assign Task** on a team card. The task will appear on the assignee's dashboard in real time.
+From the `teams` page, click **Assign Task** on a team card. The task will appear on the assignee's dashboard in real time.
 
 ### Inspecting the data
 
@@ -118,11 +118,11 @@ This opens a browser-based GUI at `http://localhost:5555` where you can browse a
 
 ### What I reviewed and changed manually
 
-- All Prisma schema decisions — specifically making `teamId` nullable on `Task` so personal tasks are unaffected by team deletion, and ensuring cascade rules were correct
+- Database schema decisions — specifically making `teamId` nullable on `Task` so personal tasks are unaffected by team deletion, and ensuring cascade rules were correct
 - The authentication flow end-to-end, including the redirect loop fix between the Axios interceptor and the login page
 - The date filtering logic for today/upcoming tasks, adding the month and year checks to prevent false positives across months
 - Component structure and state management patterns, consolidating multiple `useState` calls into a single `values` object across forms
-- The socket authentication middleware, fixing the type casting approach between the base `Socket` type and `AuthenticatedSocket`
+- The socket authentication middleware, fixing the type casting approach between the base `Socket` type and `AuthenticatedSocket` to fix type errors
 - Fixing lint errors given by ESLint for not having unnoticed errors in the future
 
 ### One example where I disagreed with the AI output
