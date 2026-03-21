@@ -2,6 +2,13 @@
 
 Mira is a full-stack collaborative task management application that lets you create and manage tasks, organize team members, assign work across your team, and track progress.
 
+## Documentation
+
+| File                                 | Description                                       |
+| ------------------------------------ | ------------------------------------------------- |
+| [README.md](./README.md)             | Installation steps and project overview           |
+| [ARCHITECTURE.md](./ARCHITECTURE.md) | System design, data flow, and technical decisions |
+
 ## Features
 
 - **Google Authentication** - secure sign-in via Google OAuth, with JWT access/refresh token rotation
