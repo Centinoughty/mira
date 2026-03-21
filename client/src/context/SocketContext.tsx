@@ -21,20 +21,41 @@ export function SocketProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (isLoading || !user) return;
 
-    const s = connectSocket("");
+    const s = connectSocket();
     socketInstance = s;
 
-    s.on(
-      "task:assigned",
-      (data: { task: { title: string }; assignedBy: { email: string } }) => {
-        showToast(
-          `📋 New task assigned: "${data.task.title}" by ${data.assignedBy.email}`,
-        );
-        qc.invalidateQueries({ queryKey: ["tasks"] });
-      },
-    );
+    function onConnect() {
+      console.log("Socket connected:", s.id);
+    }
+
+    function onConnectError(err: Error) {
+      console.error("Socket connection error:", err.message);
+    }
+
+    function onDisconnect(reason: string) {
+      console.log("Socket disconnected:", reason);
+    }
+
+    function onTaskAssigned(data: {
+      task: { title: string };
+      assignedBy: { email: string };
+    }) {
+      showToast(
+        `📋 New task assigned: "${data.task.title}" by ${data.assignedBy.email}`,
+      );
+      qc.invalidateQueries({ queryKey: ["tasks"] });
+    }
+
+    s.on("connect", onConnect);
+    s.on("connect_error", onConnectError);
+    s.on("disconnect", onDisconnect);
+    s.on("task:assigned", onTaskAssigned);
 
     return () => {
+      s.off("connect", onConnect);
+      s.off("connect_error", onConnectError);
+      s.off("disconnect", onDisconnect);
+      s.off("task:assigned", onTaskAssigned);
       disconnectSocket();
       socketInstance = null;
     };

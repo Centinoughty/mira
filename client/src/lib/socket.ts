@@ -7,19 +7,24 @@ export function getSocket(): Socket {
     socket = io(process.env.NEXT_PUBLIC_API_URL!, {
       withCredentials: true,
       autoConnect: false,
+      transports: ["websocket", "polling"],
     });
   }
   return socket;
 }
 
-export function connectSocket(token: string) {
+export function connectSocket() {
   const s = getSocket();
-  s.auth = { token };
-  s.connect();
+  if (!s.connected) {
+    s.connect();
+  }
   return s;
 }
 
 export function disconnectSocket() {
-  socket?.disconnect();
-  socket = null;
+  if (socket) {
+    socket.off();
+    socket.disconnect();
+    socket = null;
+  }
 }

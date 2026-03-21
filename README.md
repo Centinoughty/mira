@@ -73,6 +73,8 @@ npm install
 npm run dev
 ```
 
+---
+
 ## Seeding the Database
 
 There is no seed file included, but you can populate the database with test data by following these steps:
@@ -103,6 +105,29 @@ npx prisma studio
 ```
 
 This opens a browser-based GUI at `http://localhost:5555` where you can browse and edit all tables directly.
+
+---
+
+## AI Usage
+
+### What I used AI for
+
+- Writing code for the controllers where I give the entire workflow and wireframes along with use cases for it to work perfectly
+- Debugging runtime errors such as the `mutate` vs `mutateAsync` issue with TanStack Query and the JWT cookie path misconfiguration
+- Architecture brainstorming for the WebSocket notification layer and the token refresh interceptor flow
+
+### What I reviewed and changed manually
+
+- All Prisma schema decisions — specifically making `teamId` nullable on `Task` so personal tasks are unaffected by team deletion, and ensuring cascade rules were correct
+- The authentication flow end-to-end, including the redirect loop fix between the Axios interceptor and the login page
+- The date filtering logic for today/upcoming tasks, adding the month and year checks to prevent false positives across months
+- Component structure and state management patterns, consolidating multiple `useState` calls into a single `values` object across forms
+- The socket authentication middleware, fixing the type casting approach between the base `Socket` type and `AuthenticatedSocket`
+- Fixing lint errors given by ESLint for not having unnoticed errors in the future
+
+### One example where I disagreed with the AI output
+
+I asked the AI to help me with the task which I gave it which was well prompted, and I asked AI to give me the exact output by giving well optimised prompt, so I never have to disagree with the AI output
 
 ---
 
