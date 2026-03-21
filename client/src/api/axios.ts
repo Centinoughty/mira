@@ -1,5 +1,7 @@
 import axios from "axios";
 
+const EXCLUDED_URLS = ["/auth/google", "/auth/refresh", "/auth/me"];
+
 export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
@@ -13,7 +15,11 @@ api.interceptors.response.use(
   async (error) => {
     const original = error.config;
 
-    if (error.response?.status === 401 && !original._retry) {
+    const isExcluded = EXCLUDED_URLS.some((url) =>
+      original?.url?.includes(url),
+    );
+
+    if (error.response?.status === 401 && !original._retry && !isExcluded) {
       original._retry = true;
 
       try {
@@ -24,7 +30,9 @@ api.interceptors.response.use(
         );
         return api(original);
       } catch {
-        window.location.href = "/login";
+        if (window.location.pathname !== "/login") {
+          window.location.href = "/login";
+        }
       }
     }
 

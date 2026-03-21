@@ -1,5 +1,6 @@
 "use client";
 
+import { SocketProvider } from "@/context/SocketContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 
@@ -8,7 +9,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <QueryClientProvider client={client}>{children}</QueryClientProvider>
+      <QueryClientProvider client={client}>
+        <SocketProvider>{children}</SocketProvider>
+      </QueryClientProvider>
     </>
   );
 }

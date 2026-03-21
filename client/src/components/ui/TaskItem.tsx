@@ -1,5 +1,5 @@
 import { TaskItemProps } from "@/types/task";
-import { Clock, EllipsisVertical, Pencil, Trash2 } from "lucide-react";
+import { Clock, Pencil, Trash2 } from "lucide-react";
 import Image from "next/image";
 
 interface TaskItemExtendedProps extends TaskItemProps {

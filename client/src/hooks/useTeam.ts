@@ -48,17 +48,15 @@ export default function useTeam() {
   return {
     teams,
     allMembers,
+    isLoading: query.isLoading,
 
     createTeam: createMutation.mutateAsync,
     isCreating: createMutation.isPending,
 
     addMember: addMemberMutation.mutateAsync,
     isAddingMember: addMemberMutation.isPending,
-    addMemberError: addMemberMutation.error,
 
     removeMember: removeMemberMutation.mutate,
     deleteTeam: deleteTeamMutation.mutate,
-
-    isLoading: query.isLoading,
   };
 }

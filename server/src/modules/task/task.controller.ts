@@ -2,6 +2,7 @@ import { prisma } from "../../lib/prisma";
 import { Response } from "express";
 import { TypedRequest } from "../../types/request";
 import { TaskCreateBody, TaskIdParams, TaskUpdateBody } from "./task.schema";
+import { notifyUser } from "../../lib/socket";
 
 const taskSelect = {
   id: true,
@@ -60,6 +61,15 @@ export async function createTask(
       select: taskSelect,
     });
 
+    for (const member of newTask.members) {
+      if (member.user.id !== userId) {
+        notifyUser(member.user.id, "task:assigned", {
+          task: newTask,
+          assignedBy: req.user,
+        });
+      }
+    }
+
     return res.status(201).json({ message: "Task created", task: newTask });
   } catch (error) {
     console.log("CREATE_TASK_ERROR", error);
@@ -112,6 +122,13 @@ export async function updateTask(
       return;
     }
 
+    const previousMembers = await prisma.taskMember.findMany({
+      where: { taskId: id },
+      select: { userId: true },
+    });
+
+    const previousMemberIds = new Set(previousMembers.map((m) => m.userId));
+
     await prisma.taskMember.deleteMany({ where: { taskId: id } });
 
     const updated = await prisma.task.update({
@@ -127,6 +144,16 @@ export async function updateTask(
       },
       select: taskSelect,
     });
+
+    for (const member of updated.members) {
+      const isNew = !previousMemberIds.has(member.user.id);
+      if (isNew && member.user.id !== userId) {
+        notifyUser(member.user.id, "task:assigned", {
+          task: updated,
+          assignedBy: req.user,
+        });
+      }
+    }
 
     res.status(200).json({ message: "Task updated", task: updated });
   } catch (error) {

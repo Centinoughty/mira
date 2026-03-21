@@ -7,6 +7,8 @@ export default function useUser() {
     queryKey: ["user"],
     queryFn: getUser,
     select: (data) => data.user,
+    retry: false,
+    staleTime: 1000 * 60,
   });
 
   const user: User = query.data ?? null;

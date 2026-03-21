@@ -7,6 +7,9 @@ import authRoutes from "./modules/auth/auth.route";
 import taskRoutes from "./modules/task/task.route";
 import teamRoutes from "./modules/team/team.route";
 
+import { initSocket } from "./lib/socket";
+import { createServer } from "http";
+
 dotenv.config();
 
 export function startServer() {
@@ -30,7 +33,10 @@ export function startServer() {
   app.use("/task", taskRoutes);
   app.use("/team", teamRoutes);
 
-  app.listen(PORT, () => {
+  const server = createServer(app);
+  initSocket(server);
+
+  server.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
   });
 }

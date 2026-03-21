@@ -1,7 +1,6 @@
 "use client";
 
 import { api } from "@/api/axios";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -13,6 +12,21 @@ declare global {
 
 export default function LoginPage() {
   const router = useRouter();
+
+  async function handleCredentialResponse(response: any) {
+    try {
+      const idToken = response.credential;
+
+      const res = await api.post("/auth/google", { idToken });
+
+      if (res.status === 200) {
+        router.push("/");
+      }
+    } catch (error) {
+      console.log("Login failed");
+      alert("Login failed");
+    }
+  }
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -42,21 +56,6 @@ export default function LoginPage() {
     });
 
     window.google.accounts.id.prompt();
-  }
-
-  async function handleCredentialResponse(response: any) {
-    try {
-      const idToken = response.credential;
-
-      const res = await api.post("/auth/google", { idToken });
-
-      if (res.status === 200) {
-        router.push("/");
-      }
-    } catch (error) {
-      console.log("Login failed");
-      alert("Login failed");
-    }
   }
 
   return (
