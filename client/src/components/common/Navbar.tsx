@@ -4,21 +4,18 @@ import { Bell, Search } from "lucide-react";
 import Input from "../ui/Input";
 import Image from "next/image";
 import useUser from "@/hooks/useUser";
+import Searchbar from "./Searchbar";
 
 export default function Navbar() {
   const { user, isLoading } = useUser();
 
-  if (isLoading) return null;
+  if (isLoading || !user) return null;
 
   return (
     <>
       <nav className="p-2 flex items-center justify-between border-b border-b-gray-200">
         <div>
-          <Input
-            name="search"
-            icon={Search}
-            placeholder="Search tasks, teams, or more"
-          />
+          <Searchbar />
         </div>
 
         <div className="flex items-center gap-6">

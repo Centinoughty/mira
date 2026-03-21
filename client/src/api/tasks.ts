@@ -6,8 +6,14 @@ export async function getTasks() {
   return data;
 }
 
-export async function createTask(values: TaskFormValue) {
-  const { data } = await api.post("/task/create", values);
+export async function createTask({
+  values,
+  teamId,
+}: {
+  values: TaskFormValue;
+  teamId: string | undefined;
+}) {
+  const { data } = await api.post("/task/create", { ...values, teamId });
   return data;
 }
 

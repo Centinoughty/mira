@@ -60,7 +60,13 @@ export default function useTask() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["tasks"] }),
   });
 
-  const createItem = (values: TaskFormValue) => createMutation.mutate(values);
+  const createItem = ({
+    values,
+    teamId,
+  }: {
+    values: TaskFormValue;
+    teamId: string | undefined;
+  }) => createMutation.mutate({ values, teamId });
   const toggleItem = (id: string) => toggleMutation.mutate(id);
   const updateItem = ({ id, values }: { id: string; values: TaskFormValue }) =>
     updateMutation.mutate({ id, values });

@@ -75,6 +75,7 @@ export default function Home() {
       </main>
 
       <TaskForm
+        key={editing?.id ?? "edit"}
         open={!!editing}
         defaultValues={
           editing
@@ -96,11 +97,12 @@ export default function Home() {
       />
 
       <TaskForm
+        key="create"
         open={open}
         onClose={() => setOpen(false)}
         isSubmitting={isCreating}
         availableMembers={allMembers}
-        onSubmit={(values) => createTask(values)}
+        onSubmit={(values) => createTask({ values, teamId: undefined })}
       />
 
       <button

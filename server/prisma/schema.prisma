@@ -40,6 +40,9 @@ model Task {
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  teamId String?
+  team   Team?   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
   members TaskMember[]
 
   createdAt DateTime @default(now())
@@ -70,6 +73,7 @@ model Team {
   owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
   members TeamMember[]
+  tasks   Task[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

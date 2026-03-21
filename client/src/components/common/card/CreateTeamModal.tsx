@@ -23,6 +23,7 @@ interface CreateTeamModalProps {
   onClose: () => void;
   onCreate: (values: CreateTeamValues) => Promise<void>;
   isCreating: boolean;
+  currentUserEmail: string;
 }
 
 export default function CreateTeamModal({
@@ -30,6 +31,7 @@ export default function CreateTeamModal({
   onClose,
   onCreate,
   isCreating,
+  currentUserEmail,
 }: CreateTeamModalProps) {
   const [values, setValues] = useState<CreateTeamValues>(initialValues);
   const [emailError, setEmailError] = useState("");
@@ -41,14 +43,20 @@ export default function CreateTeamModal({
   function addEmail() {
     const trimmed = values.emailInput.trim().toLowerCase();
     if (!trimmed) return;
+
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
       setEmailError("Invalid email address");
       return;
     }
-    if (values.memberEmails.includes(trimmed)) {
-      setEmailError("Already added");
+    if (trimmed === currentUserEmail.toLowerCase()) {
+      setEmailError("You are already the owner of this team");
       return;
     }
+    if (values.memberEmails.includes(trimmed)) {
+      setEmailError("This email has already been added");
+      return;
+    }
+
     setValues((prev) => ({
       ...prev,
       emailInput: "",

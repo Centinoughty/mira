@@ -52,7 +52,10 @@ export async function createTeam(
 
     const users = memberEmails.length
       ? await prisma.user.findMany({
-          where: { email: { in: memberEmails }, NOT: { id: userId } },
+          where: {
+            email: { in: memberEmails },
+            NOT: { id: userId },
+          },
           select: { id: true },
         })
       : [];
@@ -63,7 +66,7 @@ export async function createTeam(
         description: description ?? null,
         ownerId: userId,
         members: {
-          create: users.map((u) => ({ userId: u.id })),
+          create: [{ userId }, ...users.map((u) => ({ userId: u.id }))],
         },
       },
       select: teamSelect,
@@ -99,11 +102,20 @@ export async function addTeamMember(
       return;
     }
 
+    if (user.id === ownerId) {
+      res
+        .status(400)
+        .json({ message: "You are already a member of this team" });
+      return;
+    }
+
     const existing = await prisma.teamMember.findUnique({
       where: { teamId_userId: { teamId, userId: user.id } },
     });
     if (existing) {
-      res.status(409).json({ message: "User is already a member" });
+      res
+        .status(409)
+        .json({ message: "User is already a member of this team" });
       return;
     }
 

@@ -13,6 +13,7 @@ import AddMemberModal from "@/components/common/card/AddMemberModal";
 import { useState } from "react";
 import CreateTeamModal from "@/components/common/card/CreateTeamModal";
 import TeamCard from "@/components/common/card/TeamCard";
+import useUser from "@/hooks/useUser";
 
 export default function TeamsPage() {
   const {
@@ -27,6 +28,7 @@ export default function TeamsPage() {
   } = useTeam();
 
   const { createTask, isCreating: isCreatingTask } = useTask();
+  const { user } = useUser();
 
   const [createOpen, setCreateOpen] = useState(false);
   const [addMemberTarget, setAddMemberTarget] = useState<Team | null>(null);
@@ -112,6 +114,7 @@ export default function TeamsPage() {
         onClose={() => setCreateOpen(false)}
         onCreate={createTeam}
         isCreating={isCreating}
+        currentUserEmail={user?.email ?? ""}
       />
 
       <AddMemberModal
@@ -130,7 +133,9 @@ export default function TeamsPage() {
         onClose={() => setAssignTaskTarget(null)}
         isSubmitting={isCreatingTask}
         availableMembers={assignableMembers}
-        onSubmit={(values: TaskFormValue) => createTask(values)}
+        onSubmit={(values: TaskFormValue) =>
+          createTask({ values, teamId: assignTaskTarget?.id })
+        }
       />
     </>
   );
