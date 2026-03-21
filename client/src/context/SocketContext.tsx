@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useRef, ReactNode } from "react";
+import { createContext, useContext, useEffect, ReactNode } from "react";
 import { Socket } from "socket.io-client";
 import { connectSocket, disconnectSocket } from "@/lib/socket";
 import { useQueryClient } from "@tanstack/react-query";
@@ -12,18 +12,19 @@ interface SocketContextValue {
 
 const SocketContext = createContext<SocketContextValue>({ socket: null });
 
+let socketInstance: Socket | null = null;
+
 export function SocketProvider({ children }: { children: ReactNode }) {
   const { user, isLoading } = useUser();
   const qc = useQueryClient();
-  const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
     if (isLoading || !user) return;
 
-    const socket = connectSocket("");
-    socketRef.current = socket;
+    const s = connectSocket("");
+    socketInstance = s;
 
-    socket.on(
+    s.on(
       "task:assigned",
       (data: { task: { title: string }; assignedBy: { email: string } }) => {
         showToast(
@@ -35,11 +36,12 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 
     return () => {
       disconnectSocket();
+      socketInstance = null;
     };
-  }, [qc, user, isLoading]);
+  }, [user, isLoading, qc]);
 
   return (
-    <SocketContext.Provider value={{ socket: socketRef.current }}>
+    <SocketContext.Provider value={{ socket: socketInstance }}>
       {children}
     </SocketContext.Provider>
   );

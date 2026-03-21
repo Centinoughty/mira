@@ -1,4 +1,4 @@
-import { SyntheticEvent, useEffect, useState } from "react";
+import { SyntheticEvent, useState } from "react";
 import Modal from "../ui/Modal";
 import {
   Calendar,
@@ -57,13 +57,11 @@ export default function TaskForm({
   isSubmitting,
   availableMembers = [],
 }: TaskFormProps) {
-  const [values, setValues] = useState<TaskFormValue>(initialValues);
+  const [values, setValues] = useState<TaskFormValue>(
+    defaultValues ?? initialValues,
+  );
 
   const isEditing = !!defaultValues;
-
-  useEffect(() => {
-    if (open) setValues(defaultValues ?? initialValues);
-  }, [open, defaultValues]);
 
   function handleChange(
     key: keyof TaskFormValue,

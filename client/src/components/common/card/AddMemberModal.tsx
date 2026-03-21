@@ -42,8 +42,13 @@ export default function AddMemberModal({
       setValues(initialValues);
       setError("");
       onClose();
-    } catch (err: any) {
-      setError(err?.response?.data?.message ?? "Something went wrong");
+    } catch (err) {
+      const message =
+        err instanceof Error
+          ? (err as { response?: { data?: { message?: string } } }).response
+              ?.data?.message
+          : undefined;
+      setError(message ?? "Something went wrong");
     }
   }
 

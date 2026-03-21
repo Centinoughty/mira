@@ -2,31 +2,40 @@
 
 import { api } from "@/api/axios";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 declare global {
   interface Window {
-    google: any;
+    google: {
+      accounts: {
+        id: {
+          initialize: (config: {
+            client_id: string;
+            callback: (r: { credential: string }) => void;
+          }) => void;
+          prompt: () => void;
+        };
+      };
+    };
   }
 }
 
 export default function LoginPage() {
   const router = useRouter();
 
-  async function handleCredentialResponse(response: any) {
-    try {
-      const idToken = response.credential;
-
-      const res = await api.post("/auth/google", { idToken });
-
-      if (res.status === 200) {
-        router.push("/");
+  const handleCredentialResponse = useCallback(
+    async (response: { credential: string }) => {
+      try {
+        const res = await api.post("/auth/google", {
+          idToken: response.credential,
+        });
+        if (res.status === 200) router.push("/");
+      } catch {
+        alert("Login failed");
       }
-    } catch (error) {
-      console.log("Login failed");
-      alert("Login failed");
-    }
-  }
+    },
+    [router],
+  );
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -42,7 +51,7 @@ export default function LoginPage() {
     };
 
     document.body.appendChild(script);
-  }, []);
+  }, [handleCredentialResponse]);
 
   function handleGoogleLogin() {
     if (!window.google?.accounts?.id) {

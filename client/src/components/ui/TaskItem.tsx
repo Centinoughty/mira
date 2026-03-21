@@ -18,6 +18,13 @@ export default function TaskItem({
   onEdit,
   onDelete,
 }: TaskItemExtendedProps) {
+  const today = new Date();
+  const due = new Date(dueDate);
+  const isToday =
+    today.getDate() === due.getDate() &&
+    today.getMonth() === due.getMonth() &&
+    today.getFullYear() === due.getFullYear();
+
   return (
     <>
       <div
@@ -51,7 +58,7 @@ export default function TaskItem({
               <span className="text-sm text-gray-500 flex items-center gap-1">
                 <Clock size={14} />
                 Due{" "}
-                {new Date(Date.now()).getDate() === new Date(dueDate).getDate()
+                {isToday
                   ? new Date(dueDate).toLocaleTimeString("en-US", {
                       hour: "numeric",
                       minute: "numeric",
