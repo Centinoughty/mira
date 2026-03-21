@@ -73,6 +73,37 @@ npm install
 npm run dev
 ```
 
+## Seeding the Database
+
+There is no seed file included, but you can populate the database with test data by following these steps:
+
+### 1. Create a user
+
+Sign in with a real Google account via the login page. This creates your first user in the database automatically.
+
+### 2. Create additional test users
+
+To test task assignment and team collaboration, sign in with additional Google accounts (e.g. using different browser profiles or incognito windows). Each sign-in creates a new user row.
+
+### 3. Create teams
+
+Once you have two or more users, log in as one user and navigate to the **Teams** page. Create a team and invite the other users by their Google email addresses.
+
+### 4. Assign tasks
+
+From the **Teams** page, click **Assign Task** on a team card. The task will appear on the assignee's dashboard in real time.
+
+### Inspecting the data
+
+If you want to view or manually edit the database, you can use Prisma Studio:
+
+```bash
+cd server
+npx prisma studio
+```
+
+This opens a browser-based GUI at `http://localhost:5555` where you can browse and edit all tables directly.
+
 ---
 
 ## Google OAuth Setup
