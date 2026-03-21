@@ -1,7 +1,6 @@
 "use client";
 
-import { Bell, Search } from "lucide-react";
-import Input from "../ui/Input";
+import { Bell } from "lucide-react";
 import Image from "next/image";
 import useUser from "@/hooks/useUser";
 import Searchbar from "./Searchbar";
